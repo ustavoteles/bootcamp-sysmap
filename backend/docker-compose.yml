@@ -1,0 +1,76 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: postgres
+    environment:
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: devdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devuser -d devdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks:
+      - app-network
+
+  localstack:
+    image: localstack/localstack
+    container_name: localstack
+    hostname: localstack
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    environment:
+      SERVICES: s3
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      EDGE_PORT: 4566
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+    networks:
+      - app-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://devuser:devpassword@postgres:5432/devdb?connect_timeout=5"
+      S3_ENDPOINT: "http://localstack:4566"
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "test"
+      AWS_SECRET_ACCESS_KEY: "test"
+      BUCKET_NAME: "my-app-bucket"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

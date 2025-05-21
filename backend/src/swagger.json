@@ -1,0 +1,1813 @@
+{
+  "openapi": "3.0.0",
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "info": {
+    "title": "Bootcamp 2025 API",
+    "version": "1.0.0",
+    "description": "API para gerenciamento de atividades e usuários do Bootcamp"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor local"
+    }
+  ],
+  "tags": [
+    { "name": "Autenticação" },
+    { "name": "Usuários" },
+    { "name": "Atividades" }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "security": [],
+        "summary": "Registrar novo usuário",
+        "tags": ["Autenticação"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "João Silva" },
+                  "email": { "type": "string", "example": "joao@email.com" },
+                  "password": { "type": "string", "example": "Senha123@" },
+                  "cpf": { "type": "string", "example": "123.456.789-00" }
+                },
+                "required": ["name", "email", "password", "cpf"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Usuário criado com sucesso"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Informe os campos obrigatórios corretamente"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "O e-mail ou CPF informado já pertence a outro usuário"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/sign-in": {
+      "post": {
+        "security": [],
+        "summary": "Login do usuário",
+        "tags": ["Autenticação"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "example": "joao@email.com" },
+                  "password": { "type": "string", "example": "Senha123@" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                  "user": {
+                    "id": "3f885f64-5717-4562-b3fc-2c963f68afab",
+                    "name": "João Silva",
+                    "email": "joao@email.com",
+                    "cpf": "string",
+                    "avatar": "string",
+                    "xp": 0,
+                    "level": 0,
+                    "achievements": [
+                      {
+                        "name": "string",
+                        "criterion": "string"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Informe os campos obrigatórios corretamente"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Senha incorreta"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Esta conta foi desativada e não pode ser utilizada"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Usuário não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "summary": "Obter dados do usuário",
+        "tags": ["Usuários"],
+        "responses": {
+          "200": {
+            "description": "Dados do usuário",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "3f885f64-5717-4562-b3fc-2c963f68afab",
+                  "name": "João Silva",
+                  "email": "joao@email.com",
+                  "xp": 100,
+                  "level": 2
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Esta conta foi desativada e não pode ser utilizada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/preferences": {
+      "get": {
+        "summary": "Obter preferências do usuário",
+        "tags": ["Usuários"],
+        "responses": {
+          "200": {
+            "description": "Lista de preferências",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "typeId": "c7f42b7b-4b32-453c-902d-33baae755607",
+                    "typeName": "Yoga"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Esta conta foi desativada e não pode ser utilizada"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Preferências não encontradas"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/preferences/define": {
+      "post": {
+        "summary": "Definir interesses do usuário",
+        "tags": ["Usuários"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "typeId": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Preferências atualizadas com sucesso"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Um ou mais ID informados são inválidos"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Esta conta foi desativada e não pode ser utilizada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/avatar": {
+      "put": {
+        "summary": "Atualizar avatar do usuário",
+        "tags": ["Usuários"],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Avatar atualizado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Avatar atualizado com sucesso",
+                  "avatarUrl": "http://example.com/avatar.jpg"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Arquivo inválido ou não enviado"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Esta conta foi desativada e não pode ser utilizada"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Arquivo muito grande (tamanho máximo: 5MB)"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro ao processar upload do avatar"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/update": {
+      "put": {
+        "summary": "Atualizar dados do usuário",
+        "tags": ["Usuários"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dados atualizados",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Dados atualizados com sucesso"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Dados inválidos fornecidos"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Esta conta foi desativada e não pode ser utilizada"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "O e-mail informado já está em uso por outro usuário"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro ao atualizar dados do usuário"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/deactivate": {
+      "delete": {
+        "summary": "Desativar conta",
+        "tags": ["Usuários"],
+        "responses": {
+          "200": {
+            "description": "Conta desativada",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Conta desativada com sucesso"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Operação não permitida"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro ao desativar conta"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/types": {
+      "get": {
+        "summary": "Listar tipos de atividades",
+        "tags": ["Atividades"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": "c7f42b7b-4b32-453c-902d-33baae755607",
+                    "name": "string",
+                    "description": "string",
+                    "image": "string"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities": {
+      "get": {
+        "summary": "Listar atividades com paginação",
+        "tags": ["Atividades"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Número da página",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Tamanho da página",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "typeId",
+            "in": "query",
+            "description": "Filtrar atividades por tipo",
+            "schema": {
+              "type": "integer",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Ordernar as atividades por um campo específico",
+            "schema": {
+              "type": "string",
+              "default": "createdAt"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Direção da ordenação",
+            "schema": {
+              "type": "string",
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": [
+                    {
+                      "id": "ac209fd0-6637-43f0-8fb0-99479a9d491b",
+                      "title": "Yoga no parque",
+                      "type": "Yoga"
+                    }
+                  ],
+                  "meta": {
+                    "totalItems": 1,
+                    "itemCount": 1,
+                    "itemsPerPage": 10,
+                    "totalPages": 1,
+                    "currentPage": 1
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/all": {
+      "get": {
+        "summary": "Listar todas as atividades sem paginação",
+        "tags": ["Atividades"],
+        "parameters": [
+          {
+            "name": "typeId",
+            "in": "query",
+            "description": "Filtrar por tipo de atividade",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "description": "Campo para ordenação",
+            "schema": {
+              "type": "string",
+              "default": "createdAt"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Direção da ordenação",
+            "schema": {
+              "type": "string",
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": "ac209fd0-6637-43f0-8fb0-99479a9d491b",
+                    "title": "Yoga no parque",
+                    "type": "Yoga"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/user/creator": {
+      "get": {
+        "summary": "Listar atividades criadas pelo usuário (paginado)",
+        "tags": ["Atividades"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Número da página",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Tamanho da página",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": [
+                    {
+                      "id": "ac209fd0-6637-43f0-8fb0-99479a9d491b",
+                      "title": "Yoga no parque",
+                      "status": "pending"
+                    }
+                  ],
+                  "meta": {
+                    "totalItems": 1,
+                    "itemCount": 1,
+                    "itemsPerPage": 10,
+                    "totalPages": 1,
+                    "currentPage": 1
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/user/creator/all": {
+      "get": {
+        "summary": "Listar todas as atividades criadas pelo usuário",
+        "tags": ["Atividades"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": "ac209fd0-6637-43f0-8fb0-99479a9d491b",
+                    "title": "Yoga no parque",
+                    "status": "pending"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/user/participant": {
+      "get": {
+        "summary": "Listar atividades em que o usuário participa (paginado)",
+        "tags": ["Atividades"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Número da página",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Tamanho da página",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": [
+                    {
+                      "id": "ac209fd0-6637-43f0-8fb0-99479a9d491b",
+                      "title": "Yoga no parque",
+                      "status": "approved"
+                    }
+                  ],
+                  "meta": {
+                    "totalItems": 1,
+                    "itemCount": 1,
+                    "itemsPerPage": 10,
+                    "totalPages": 1,
+                    "currentPage": 1
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/user/participant/all": {
+      "get": {
+        "summary": "Listar todas as atividades em que o usuário participa(precisa estar confirmado e aprovado na atividade)",
+        "tags": ["Atividades"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "totalItems": 6,
+                  "data": [
+                    {
+                      "id": "00000000-0000-0000-0000-000000000001",
+                      "title": "Atividade Genérica 1",
+                      "description": "Descrição genérica da atividade 1",
+                      "typeId": "00000000-0000-0000-0000-000000000002",
+                      "confirmationCode": "GEN12345",
+                      "image": "https://link-para-imagem.com/imagem-generica.jpg",
+                      "scheduledDate": "2025-04-01T07:00:00.000Z",
+                      "createdAt": "2025-03-27T20:34:14.420Z",
+                      "deletedAt": null,
+                      "completedAt": null,
+                      "private": false,
+                      "creatorId": "00000000-0000-0000-0000-000000000003",
+                      "type": {
+                        "id": "00000000-0000-0000-0000-000000000002",
+                        "name": "Tipo Genérico",
+                        "description": "Descrição genérica do tipo",
+                        "image": "tipo.png"
+                      },
+                      "ActivityAddresses": [],
+                      "ActivityParticipants": [
+                        {
+                          "id": "00000000-0000-0000-0000-000000000004",
+                          "activityId": "00000000-0000-0000-0000-000000000001",
+                          "userId": "00000000-0000-0000-0000-000000000005",
+                          "approved": true,
+                          "confirmedAt": "2025-03-27T22:43:00.872Z",
+                          "user": {
+                            "id": "00000000-0000-0000-0000-000000000005",
+                            "name": "Usuário Genérico",
+                            "avatar": "http://localhost:3000/public/images/default-avatar.jpg"
+                          }
+                        },
+                        {
+                          "id": "00000000-0000-0000-0000-000000000006",
+                          "activityId": "00000000-0000-0000-0000-000000000001",
+                          "userId": "00000000-0000-0000-0000-000000000007",
+                          "approved": true,
+                          "confirmedAt": "2025-03-28T16:02:23.227Z",
+                          "user": {
+                            "id": "00000000-0000-0000-0000-000000000007",
+                            "name": "Usuário Genérico 2",
+                            "avatar": "http://localhost:3000/public/images/default-avatar.jpg"
+                          }
+                        }
+                      ],
+                      "creator": {
+                        "id": "00000000-0000-0000-0000-000000000003",
+                        "name": "Criador Genérico",
+                        "avatar": "http://localhost:3000/public/images/default-avatar.jpg"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/{id}/participant": {
+      "get": {
+        "summary": "Listar participantes de uma atividade",
+        "tags": ["Atividades"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": "3f885f64-5717-4562-b3fc-2c963f68afab",
+                    "name": "João Silva",
+                    "status": "approved"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Você não tem permissão para ver os participantes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Atividade não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/new": {
+      "post": {
+        "summary": "Criar nova atividade",
+        "tags": ["Atividades"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "description": { "type": "string" },
+                  "typeId": { "type": "string", "format": "uuid" },
+                  "scheduledDate": { "type": "string", "format": "date-time" },
+                  "private": { "type": "boolean", "default": false }
+                },
+                "required": ["title", "typeId", "scheduledDate"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "ac209fd0-6637-43f0-8fb0-99479a9d491b",
+                  "title": "Yoga no parque"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Dados inválidos"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/{id}/subscribe": {
+      "post": {
+        "summary": "Inscrever-se em uma atividade",
+        "tags": ["Atividades"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "c9026925-ae55-4153-a5e6-983b878fab63",
+                  "activityId": "ebb4ed62-6199-45f3-9e00-85da4f11628a",
+                  "userId": "b4529157-abbb-4e36-9228-38bf5a3e0970",
+                  "approved": false,
+                  "confirmedAt": null
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Você já está inscrito nesta atividade"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Você não pode se inscrever na própria atividade"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Atividade não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/{id}/update": {
+      "put": {
+        "summary": "Atualizar atividade",
+        "tags": ["Atividades"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "description": { "type": "string" },
+                  "typeId": { "type": "string", "format": "uuid" },
+                  "adress": {
+                    "type": "string",
+                    "scheduledDate": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "boolean": { "type": "boolean", "format": "binary" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Atividade atualizada com sucesso"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Dados inválidos"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Você não tem permissão para editar esta atividade"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Atividade não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/{id}/conclude": {
+      "put": {
+        "summary": "Concluir atividade",
+        "tags": ["Atividades"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Atividade concluída com sucesso"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Atividade já concluída"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Você não tem permissão para concluir esta atividade"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Atividade não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/{id}/approve": {
+      "put": {
+        "summary": "Aprovar participante",
+        "tags": ["Atividades"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": { "type": "string", "format": "uuid" },
+                  "approve": { "type": "boolean" }
+                },
+                "required": ["userId", "approve"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Participante aprovado com sucesso"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Dados inválidos"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Você não tem permissão para aprovar participantes"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Atividade ou usuário não encontrado"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/{id}/check-in": {
+      "put": {
+        "summary": "Fazer check-in na atividade",
+        "tags": ["Atividades"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "confirmationCode": { "type": "string" }
+                },
+                "required": ["confirmationCode"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Check-in realizado com sucesso",
+                  "xpEarned": 10
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Código de confirmação inválido"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Você não está aprovado nesta atividade"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Atividade não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/{id}/unsubscribe": {
+      "delete": {
+        "summary": "Cancelar inscrição",
+        "tags": ["Atividades"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Inscrição cancelada com sucesso"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Você não está inscrito nesta atividade"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Atividade não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/{id}/delete": {
+      "delete": {
+        "summary": "Excluir atividade",
+        "tags": ["Atividades"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Atividade excluída com sucesso"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Autenticação necessária"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Você não tem permissão para excluir esta atividade"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Atividade não encontrada"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Erro inesperado"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

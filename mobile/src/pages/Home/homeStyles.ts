@@ -1,0 +1,92 @@
+import { StyleSheet } from "react-native";
+
+export const homeStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: "25%",
+    padding: 20,
+  },
+  banner: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: "15%",
+    backgroundColor: "#00BC7D",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 20,
+    paddingTop: 40,
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+  },
+  header: {
+    flexDirection: "column",
+  },
+  title: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: "white",
+  },
+  name: {
+    fontSize: 30,
+    color: "white",
+    fontFamily: "DMSans-SemiBold",
+  },
+  profile: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 58,
+    justifyContent: "center",
+    alignContent: "center",
+    gap: 10,
+  },
+  square: {
+    width: 52,
+    height: 33,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: "white",
+    flexDirection: "row",
+    gap: 4,
+  },
+  text: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "white",
+  },
+  recommendations: {
+    marginTop: 2,
+  },
+  recommendationsTitleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  recommendationsTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    fontFamily: "BebasNeue-Regular",
+  },
+  recommendationsSeeMore: {
+    fontSize: 15,
+    fontWeight: "bold",
+    fontFamily: "BebasNeue-Regular",
+  },
+  newActivityButton: {
+    backgroundColor: "#00BC7D",
+    borderRadius: 50,
+    color: "white",
+    position: "absolute",
+    bottom: 10,
+    right: 35,
+    width: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
